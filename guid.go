@@ -42,7 +42,7 @@ type Snowflake struct {
 }
 
 func NewSnowflake(workerID int64) *Snowflake {
-	if workerID > workerMax {
+	if workerID < 0 || workerID > workerMax {
 		panic(fmt.Sprintf("worker ID must be between 0 and %d", workerMax))
 	}
 
@@ -72,6 +72,6 @@ func (s *Snowflake) NextID() int64 {
 
 	s.lastTime = currentTime
 
-	id := (time.Now().UnixNano()-epoch)<<timeShift | s.workerID<<workerShift | s.sequence
+	id := (currentTime-epoch)<<timeShift | s.workerID<<workerShift | s.sequence
 	return id
 }
